@@ -51,7 +51,7 @@ export const fetchResumoFinanceiro = async () => {
     return await getRequest('financeiro_resumo');
   } catch (error) {
     // Retorna uma estrutura padrão vazia se a planilha estiver em branco ou ocorrer 404/erro de rede
-    console.warn('Aviso: Nenhum dado financeiro encontrado ou planilha vazia. Inicializando com estrutura padrão.', error);
+    //console.warn('Aviso: Nenhum dado financeiro encontrado ou planilha vazia. Inicializando com estrutura padrão.', error);
     return {
       somatorioGanhos: 0,
       somatorioGastos: 0,

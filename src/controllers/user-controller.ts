@@ -6,11 +6,11 @@ export const handleLoginSubmit = async (e: React.FormEvent, { email, password, s
   setError(null);
 
   try {
-    console.log('Enviando dados de login:', { email, senha: password });
+    //console.log('Enviando dados de login:', { email, senha: password });
     
     const resposta = await loginUser({ email, senha: password });
     
-    console.log('Resposta bruta do servidor:', resposta);
+    //console.log('Resposta bruta do servidor:', resposta);
 
     if (resposta.status === 200) {
       onSuccess(resposta.usuario);
@@ -18,7 +18,7 @@ export const handleLoginSubmit = async (e: React.FormEvent, { email, password, s
       setError(resposta.mensagem || 'Credenciais inválidas.');
     }
   } catch (err) {
-    console.error('Erro na requisição:', err);
+    //console.error('Erro na requisição:', err);
     setError('Erro de conexão com o servidor. Tente novamente.');
   } finally {
     setLoading(false);

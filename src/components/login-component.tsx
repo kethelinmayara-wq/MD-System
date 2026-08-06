@@ -23,9 +23,9 @@ export default function LoginComponent() {
 
     try {
       if (isCadastrando) {
-        console.log('Enviando dados de cadastro:', { nome, sobrenome, email, senha, telefone });
+        //console.log('Enviando dados de cadastro:', { nome, sobrenome, email, senha, telefone });
         const res = await createUser({ nome, sobrenome, email, senha, telefone });
-        console.log('Resposta bruta do cadastro:', res);
+        //console.log('Resposta bruta do cadastro:', res);
 
         if (res.status === 201) {
           setMensagem({ texto: 'Conta criada com sucesso! Faça login.', tipo: 'sucesso' });
@@ -35,9 +35,9 @@ export default function LoginComponent() {
           setMensagem({ texto: res.mensagem || 'Erro ao cadastrar.', tipo: 'erro' });
         }
       } else {
-        console.log('Enviando dados de login:', { email, senha });
+        //console.log('Enviando dados de login:', { email, senha });
         const res = await loginUser({ email, senha });
-        console.log('Resposta bruta do login:', res);
+        //console.log('Resposta bruta do login:', res);
 
         if (res.status === 200) {
           localStorage.setItem('usuario_logado', JSON.stringify(res.usuario));
@@ -47,7 +47,7 @@ export default function LoginComponent() {
         }
       }
     } catch (err) {
-      console.error('Erro na requisição:', err);
+      //console.error('Erro na requisição:', err);
       setMensagem({ texto: 'Erro de comunicação com o servidor.', tipo: 'erro' });
     } finally {
       setLoading(false);
