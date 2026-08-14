@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { loginUser, createUser } from '../services/user-service';
 
 export default function LoginComponent() {
@@ -13,8 +12,6 @@ export default function LoginComponent() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [telefone, setTelefone] = useState('');
-  
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,9 +20,7 @@ export default function LoginComponent() {
 
     try {
       if (isCadastrando) {
-        //console.log('Enviando dados de cadastro:', { nome, sobrenome, email, senha, telefone });
         const res = await createUser({ nome, sobrenome, email, senha, telefone });
-        //console.log('Resposta bruta do cadastro:', res);
 
         if (res.status === 201) {
           setMensagem({ texto: 'Conta criada com sucesso! Faça login.', tipo: 'sucesso' });
@@ -35,19 +30,23 @@ export default function LoginComponent() {
           setMensagem({ texto: res.mensagem || 'Erro ao cadastrar.', tipo: 'erro' });
         }
       } else {
-        //console.log('Enviando dados de login:', { email, senha });
         const res = await loginUser({ email, senha });
-        //console.log('Resposta bruta do login:', res);
 
         if (res.status === 200) {
+          // Salva o usuário logado e o timestamp obrigatório da sessão
           localStorage.setItem('usuario_logado', JSON.stringify(res.usuario));
-          navigate('/dashboard');
+          localStorage.setItem('sessao_timestamp', new Date().getTime().toString());
+
+          // Força o redirecionamento limpo respeitando o ambiente (Localhost vs GitHub Pages /MD-System)
+          const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          const basePath = isLocalhost ? '' : '/MD-System';
+          
+          window.location.href = `${window.location.origin}${basePath}/dashboard`;
         } else {
           setMensagem({ texto: res.mensagem || 'E-mail ou senha incorretos.', tipo: 'erro' });
         }
       }
     } catch (err) {
-      //console.error('Erro na requisição:', err);
       setMensagem({ texto: 'Erro de comunicação com o servidor.', tipo: 'erro' });
     } finally {
       setLoading(false);
@@ -165,7 +164,7 @@ export default function LoginComponent() {
             }}
             className="text-xs text-zinc-400 hover:text-white transition-colors"
           >
-            {isCadastrando ? 'Já possui uma conta? Faça login' : 'Não tem uma conta? **Cadastre-se**'}
+            {isCadastrando ? 'Já possui uma conta? Faça login' : 'Não tem uma conta? Cadastre-se'}
           </button>
         </div>
 

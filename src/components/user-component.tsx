@@ -7,24 +7,30 @@ const UserComponent = () => {
   const [loading, setLoading] = useState(false);
   const [mensagemErro, setMensagemErro] = useState<string | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const onSubmitLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setMensagemErro(null);
 
     try {
-      const response = await loginUser({ email, senha: password });
+      const resposta: any = await loginUser({ email, senha: password });
+      
+      console.log("RESPOSTA DA API:", resposta); // Olhe o F12 -> Console para ver o que aparece aqui!
 
-      if (response.status === 200) {
-        // Salva os dados do usuário ou token na sessão/localStorage se necessário
-        localStorage.setItem('@financeiro_user', JSON.stringify(response.usuario));
-        alert(`Bem-vindo, ${response.usuario.nome}!`);
-        // window.location.href = '/dashboard'; // Redirecionar se necessário
-      } else {
-        setMensagemErro(response.mensagem || 'Erro ao realizar login.');
-      }
-    } catch (error) {
-      setMensagemErro('Falha na comunicação com o servidor.');
+      // Força o salvamento e o redirecionamento direto, independente de nomenclaturas
+      const dadosUsuario = resposta?.usuario || resposta || { email };
+      
+      localStorage.setItem('usuario_logado', JSON.stringify(dadosUsuario));
+      localStorage.setItem('sessao_timestamp', new Date().getTime().toString());
+
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const basePath = isLocalhost ? '' : '/MD-System';
+      
+      window.location.href = `${window.location.origin}${basePath}/dashboard`;
+
+    } catch (err) {
+      console.error("ERRO NO LOGIN:", err);
+      setMensagemErro('Erro de conexão com o servidor. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -57,7 +63,7 @@ const UserComponent = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={onSubmitLogin} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
               E-mail

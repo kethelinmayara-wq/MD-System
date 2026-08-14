@@ -1,4 +1,16 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSHqCFwnaSl9PYo7Cbj3QzcpB_cZHypG8xXTKASEeuF5zAq_GJJd6efmerC8jUviKL/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5O0x0vEf2iGenVt7R4DdiG2vDX8XdOzXswTaq8iuoYoRxLz2cTyInnF5rLhrh7y5KUg/exec';
+
+// Função auxiliar para recuperar o ID do usuário logado no localStorage
+const obterUsuarioIdLogado = (): string => {
+  const usuarioStr = localStorage.getItem('usuario_logado');
+  if (!usuarioStr) return '';
+  try {
+    const usuario = JSON.parse(usuarioStr);
+    return usuario.id || '';
+  } catch {
+    return '';
+  }
+};
 
 export interface TransacaoPayload {
   data?: string;
@@ -19,8 +31,10 @@ export interface EdicaoPayload {
 }
 
 const getRequest = async (acao: string) => {
-  const response = await fetch(`${SCRIPT_URL}?acao=${acao}`, {
+  const usuarioId = obterUsuarioIdLogado();
+  const response = await fetch(`${SCRIPT_URL}?acao=${acao}&usuarioId=${usuarioId}`, {
     method: 'GET',
+    redirect: 'follow',
   });
   
   if (!response.ok) {
@@ -31,12 +45,17 @@ const getRequest = async (acao: string) => {
 };
 
 const postRequest = async (payload: object) => {
+  const usuarioId = obterUsuarioIdLogado();
+  // Injeta o usuarioId automaticamente no payload enviado via POST
+  const payloadComUsuario = { ...payload, usuarioId };
+
   const response = await fetch(SCRIPT_URL, {
-    method: 'POST',
+    method: 'POST', 
+    redirect: 'follow',
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payloadComUsuario),
   });
 
   if (!response.ok) {
@@ -50,8 +69,6 @@ export const fetchResumoFinanceiro = async () => {
   try {
     return await getRequest('financeiro_resumo');
   } catch (error) {
-    // Retorna uma estrutura padrão vazia se a planilha estiver em branco ou ocorrer 404/erro de rede
-    //console.warn('Aviso: Nenhum dado financeiro encontrado ou planilha vazia. Inicializando com estrutura padrão.', error);
     return {
       somatorioGanhos: 0,
       somatorioGastos: 0,
