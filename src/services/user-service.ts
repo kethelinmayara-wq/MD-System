@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5O0x0vEf2iGenVt7R4DdiG2vDX8XdOzXswTaq8iuoYoRxLz2cTyInnF5rLhrh7y5KUg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1T2rMK5h_yaFVC0-OM_fovVFkhEw6ubvr3InBhW-B5JrM56uXZ4o4aK-KLvZqWkxT7w/exec';
 
 const request = async (payload: object) => {
   const response = await fetch(SCRIPT_URL, {
