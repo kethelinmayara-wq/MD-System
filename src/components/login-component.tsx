@@ -33,11 +33,9 @@ export default function LoginComponent() {
         const res = await loginUser({ email, senha });
 
         if (res.status === 200) {
-          // Salva o usuário logado e o timestamp obrigatório da sessão
           localStorage.setItem('usuario_logado', JSON.stringify(res.usuario));
           localStorage.setItem('sessao_timestamp', new Date().getTime().toString());
 
-          // Força o redirecionamento limpo respeitando o ambiente (Localhost vs GitHub Pages /MD-System)
           const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
           const basePath = isLocalhost ? '' : '/MD-System';
           
@@ -148,7 +146,7 @@ export default function LoginComponent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-rose-950 hover:bg-rose-900 border border-rose-900/50 text-rose-200 text-xs font-semibold rounded-xl transition-all active:scale-95 disabled:opacity-50 mt-2"
+            className="w-full py-3 bg-rose-950 hover:bg-rose-900 border border-rose-900/50 text-rose-200 text-xs font-semibold rounded-xl transition-all active:scale-95 disabled:opacity-50 mt-2 cursor-pointer"
           >
             {loading ? 'Processando...' : isCadastrando ? 'Cadastrar Conta' : 'Entrar no Sistema'}
           </button>
@@ -162,7 +160,7 @@ export default function LoginComponent() {
               setIsCadastrando(!isCadastrando);
               setMensagem(null);
             }}
-            className="text-xs text-zinc-400 hover:text-white transition-colors"
+            className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             {isCadastrando ? 'Já possui uma conta? Faça login' : 'Não tem uma conta? Cadastre-se'}
           </button>
